@@ -1,9 +1,22 @@
 import React from "react";
-import "../Footer/Footer.cs"
+import "../Footer/Footer.css"
 
 const Footer = () => {
     return (
-        <p>Footer</p>
+        <footer className="footer">
+            <div className="footer-section">
+                <h4>About Us</h4>
+                <ul className="footer-list">
+                    <li>Design</li>
+                    <li>Prototyping</li>
+                    <li>Development features</li>
+                    <li>Design systems</li>
+                    <li>Collaboration features</li>
+                    <li>Design process</li>
+                    <li>FigJam</li>
+                </ul>
+            </div>
+        </footer>
     );
 
 };
