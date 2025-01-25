@@ -82,6 +82,40 @@ def get_recommendations():
     except Exception as e:
         print('Error:', e)
         return jsonify({'error': 'Failed to generate recommendations.'}), 500
-    pass
+
+# Mock user portfolio data
+USER_PORTFOLIO = [
+    {"symbol": "AAPL", "shares": 10},
+    {"symbol": "MSFT", "shares": 5},
+    {"symbol": "TSLA", "shares": 8}
+]
+
+@app.route('/portfolio', methods=['GET'])
+def get_portfolio():
+    try:
+        portfolio_details = []
+        for holding in USER_PORTFOLIO:
+            symbol = holding['symbol']
+            shares = holding['shares']
+
+            # Fetch real-time stock price for each holding
+            stock_response = requests.get(
+                f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={symbol}&apikey={ALPHA_VANTAGE_API_KEY}'
+            )
+            stock_data = stock_response.json().get('Global Quote', {})
+
+            # Append portfolio details
+            portfolio_details.append({
+                "symbol": symbol,
+                "shares": shares,
+                "price": stock_data.get("05. price"),
+                "change_percent": stock_data.get("10. change percent")
+            })
+
+        return jsonify({"portfolio": portfolio_details}), 200
+    except Exception as e:
+        print(f"Error fetching portfolio: {e}")
+        return jsonify({"error": "Failed to fetch portfolio data"}), 500
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
