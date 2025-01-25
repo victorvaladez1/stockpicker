@@ -12,6 +12,7 @@ CORS(app)
 
 # Alpha Vantage API Key
 ALPHA_VANTAGE_API_KEY = os.getenv('ALPHA_VANTAGE_API_KEY')
+print(ALPHA_VANTAGE_API_KEY)
 
 @app.route('/recommendations', methods=['POST'])
 def get_recommendations():
