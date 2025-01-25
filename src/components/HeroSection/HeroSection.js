@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import "../HeroSection/HeroSection.css";
 
 const HeroSection = () => {
-  const navigate = useNavigate(); // Initialize navigation
+  const navigate = useNavigate();
 
   const handleGetStarted = () => {
-    navigate("/get-started"); // Navigate to the Get Started page
+    navigate("/get-started");
   };
 
   return (

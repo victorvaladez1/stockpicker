@@ -1,10 +1,13 @@
 import React from "react";
+import Navbar from "../components/NavBar/Navbar.js"
+import Footer from "../components/Footer/Footer.js"
 
 const GetStarted = () => {
     return (
         <div>
-            <h1>Welcome to the Get Started Page</h1>
-            <p>Here you can start exploring the Stock Picker application!</p>
+            <Navbar />
+            <p>This is GetStarter page</p>
+            <Footer />
         </div>
     );
 };
