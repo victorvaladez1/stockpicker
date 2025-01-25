@@ -11,8 +11,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Alpha Vantage API Key
-ALPHA_VANTAGE_API_KEY = JAUO7HLM0PAE1GU0
-
+ALPHA_VANTAGE_API_KEY = os.getenv('ALPHA_VANTAGE_API_KEY')
 
 @app.route('/recommendations', methods=['POST'])
 def get_recommendations():
@@ -119,4 +118,4 @@ def get_portfolio():
         return jsonify({"error": "Failed to fetch portfolio data"}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5002)
