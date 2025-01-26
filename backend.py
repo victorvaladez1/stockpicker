@@ -2,7 +2,8 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
 from dotenv import load_dotenv
-import os 
+import os
+import time  # For rate limiting
 
 # Load environment variables from .env file
 load_dotenv()
@@ -10,78 +11,99 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
-# Alpha Vantage API Key
-ALPHA_VANTAGE_API_KEY = os.getenv('ALPHA_VANTAGE_API_KEY')
+# Finnhub API Key
+FINNHUB_API_KEY = os.getenv('FINNHUB_API_KEY')
+
+# Function to fetch real-time stock data
+def fetch_stock_data(symbol):
+    url = f"https://finnhub.io/api/v1/quote?symbol={symbol}&token={FINNHUB_API_KEY}"
+    response = requests.get(url)
+    print(f"Fetching data for {symbol}: {response.status_code} -> {response.json()}")  # Log response
+    if response.status_code == 200:
+        data = response.json()
+        if data and data.get("c") is not None:  # Ensure valid data exists
+            return {
+                "symbol": symbol,
+                "price": data.get("c"),  # Current price
+                "high": data.get("h"),   # High price of the day
+                "low": data.get("l"),    # Low price of the day
+                "change_percent": data.get("dp")  # Percent change
+            }
+    return None  # Return None if data is invalid or request fails
+
+# Function to fetch analyst recommendation trends
+def fetch_recommendation_trends(symbol):
+    url = f"https://finnhub.io/api/v1/stock/recommendation?symbol={symbol}&token={FINNHUB_API_KEY}"
+    response = requests.get(url)
+    print(f"Fetching recommendations for {symbol}: {response.status_code} -> {response.json()}")  # Log response
+    if response.status_code == 200:
+        data = response.json()
+        if data:
+            latest_trend = data[0]  # Get the most recent recommendation trend
+            return {
+                "buy": latest_trend.get("buy"),
+                "hold": latest_trend.get("hold"),
+                "sell": latest_trend.get("sell"),
+                "strong_buy": latest_trend.get("strongBuy"),
+                "strong_sell": latest_trend.get("strongSell")
+            }
+    return None  # Return None if recommendation data is invalid
 
 @app.route('/recommendations', methods=['POST'])
 def get_recommendations():
+    """
+    Generates investment recommendations based on user input.
+    """
     data = request.json
     goal = data.get('goal')
     risk = data.get('risk')
     amount = data.get('amount')
 
     try:
-        # Fetch a list of recommended stocks based on the risk level
+        # Example stock symbols based on risk level
         stock_symbols = []
         if risk == 'high':
-            # Example: Growth stocks (tech-heavy)
-            stock_symbols = ['AAPL', 'TSLA', 'NVDA', 'AMZN', 'MSFT']
+            stock_symbols = ['AAPL', 'TSLA', 'NVDA']
         elif risk == 'medium':
-            # Example: Blend of growth and stable stocks
-            stock_symbols = ['JNJ', 'PG', 'DIS', 'KO', 'PEP']
+            stock_symbols = ['JNJ', 'PG', 'KO']
         elif risk == 'low':
-            # Example: Stable dividend-paying stocks
-            stock_symbols = ['MMM', 'MCD', 'WMT', 'PFE', 'VZ']
+            stock_symbols = ['MMM', 'MCD', 'WMT']
 
-        # Fetch real-time data for selected stocks from Alpha Vantage
+        # Fetch stock data and recommendation trends for the selected symbols
         stock_details = []
         for symbol in stock_symbols:
-            stock_response = requests.get(
-                f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={symbol}&apikey={ALPHA_VANTAGE_API_KEY}'
-            )
-            stock_data = stock_response.json().get('Global Quote', {})
+            stock_data = fetch_stock_data(symbol)
+            recommendation_trends = fetch_recommendation_trends(symbol)
             if stock_data:
+                stock_data["recommendation_trends"] = recommendation_trends
+                stock_details.append(stock_data)
+            else:
                 stock_details.append({
-                    'symbol': stock_data.get('01. symbol'),
-                    'price': stock_data.get('05. price'),
-                    'change_percent': stock_data.get('10. change percent'),
+                    "symbol": symbol,
+                    "price": "Data not available",
+                    "recommendation_trends": "Data not available"
                 })
+            time.sleep(1)  # Prevent exceeding API rate limits
 
-        # Fetch bond recommendations based on risk level
-        bond_symbols = []
-        if risk == 'high':
-            # High-risk bonds could include emerging market or corporate bonds
-            bond_symbols = ['HYG', 'EMB']  # High Yield Corporate Bond ETF, Emerging Markets Bond ETF
-        elif risk == 'medium':
-            # Medium-risk bonds could include investment-grade corporate bonds
-            bond_symbols = ['LQD', 'VCIT']  # Investment Grade Corporate Bond ETF, Intermediate-Term Corporate Bond ETF
-        elif risk == 'low':
-            # Low-risk bonds could include government bonds or broad bond market ETFs
-            bond_symbols = ['BND', 'SHY']  # Total Bond Market ETF, Short-Term Treasury ETF
-
+        # Mock bond recommendations based on risk level
         bond_details = []
-        for symbol in bond_symbols:
-            bond_response = requests.get(
-                f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={symbol}&apikey={ALPHA_VANTAGE_API_KEY}'
-            )
-            bond_data = bond_response.json().get('Global Quote', {})
-            if bond_data:
-                bond_details.append({
-                    'symbol': bond_data.get('01. symbol'),
-                    'price': bond_data.get('05. price'),
-                    'change_percent': bond_data.get('10. change percent'),
-                })
+        if risk == 'high':
+            bond_details = [{"symbol": "HYG", "price": 85.23, "change_percent": -0.10}]
+        elif risk == 'medium':
+            bond_details = [{"symbol": "LQD", "price": 120.50, "change_percent": 0.25}]
+        elif risk == 'low':
+            bond_details = [{"symbol": "BND", "price": 84.23, "change_percent": -0.05}]
 
         recommendation = {
-            'stocks': stock_details,
-            'bonds': bond_details,
-            'note': f'Based on your goal of "{goal}" and risk tolerance of "{risk}", we suggest the following investments for ${amount}.',
+            "stocks": stock_details,
+            "bonds": bond_details,
+            "note": f'Based on your goal of "{goal}" and risk tolerance of "{risk}", we suggest the following investments for ${amount}.',
         }
 
         return jsonify(recommendation), 200
     except Exception as e:
-        print('Error:', e)
-        return jsonify({'error': 'Failed to generate recommendations.'}), 500
+        print(f"Error: {e}")
+        return jsonify({"error": "Failed to generate recommendations."}), 500
 
 # Mock user portfolio data
 USER_PORTFOLIO = [
@@ -92,25 +114,29 @@ USER_PORTFOLIO = [
 
 @app.route('/portfolio', methods=['GET'])
 def get_portfolio():
+    """
+    Fetches real-time stock data for the user's portfolio holdings.
+    """
     try:
         portfolio_details = []
         for holding in USER_PORTFOLIO:
-            symbol = holding['symbol']
-            shares = holding['shares']
-
-            # Fetch real-time stock price for each holding
-            stock_response = requests.get(
-                f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={symbol}&apikey={ALPHA_VANTAGE_API_KEY}'
-            )
-            stock_data = stock_response.json().get('Global Quote', {})
-
-            # Append portfolio details
-            portfolio_details.append({
-                "symbol": symbol,
-                "shares": shares,
-                "price": stock_data.get("05. price"),
-                "change_percent": stock_data.get("10. change percent")
-            })
+            # Fetch real-time stock data for each holding
+            stock_data = fetch_stock_data(holding['symbol'])
+            if stock_data:
+                portfolio_details.append({
+                    "symbol": holding['symbol'],
+                    "shares": holding['shares'],
+                    "price": stock_data.get("price"),
+                    "change_percent": stock_data.get("change_percent")
+                })
+            else:
+                portfolio_details.append({
+                    "symbol": holding['symbol'],
+                    "shares": holding['shares'],
+                    "price": "Data not available",
+                    "change_percent": "Data not available"
+                })
+            time.sleep(1)  # Prevent exceeding API rate limits
 
         return jsonify({"portfolio": portfolio_details}), 200
     except Exception as e:
