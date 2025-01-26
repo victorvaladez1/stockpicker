@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StockPicker - Get Started</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Get Started</h1>
+  </header>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="form.html">Get Started</a></li>
+      <li><a href="portfolio.html" class="active">Portfolio</a></li>
+      <li><a href="about.html">About Us</a></li>
+      
+    </ul>
+  </nav>
+  <main>
+    <form id="get-started-form">
+      <label for="goal">Goal:</label>
+      <input type="text" id="goal" placeholder="e.g., retirement, education" required>
+      
+      <label for="risk">Risk Tolerance:</label>
+      <select id="risk">
+        <option value="low">Low</option>
+        <option value="medium" selected>Medium</option>
+        <option value="high">High</option>
+      </select>
+      
+      <label for="amount">Investment Amount:</label>
+      <input type="number" id="amount" placeholder="Enter amount" required>
+       
+      <button type="submit">Submit</button>
+    </form>
+  </main>
+  <script>
+    // Handle form submission
+    const form = document.getElementById("get-started-form");
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      // Save form data to localStorage
+      const goal = document.getElementById("goal").value;
+      const risk = document.getElementById("risk").value;
+      const amount = document.getElementById("amount").value;
+
+      localStorage.setItem("goal", goal);
+      localStorage.setItem("risk", risk);
+      localStorage.setItem("amount", amount);
+
+      // Redirect to Recommendations page
+      window.location.href = "recommendations.html";
+    });
+  </script>
+</body>
+</html>
