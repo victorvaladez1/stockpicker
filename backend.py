@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS
+
 import requests
 from dotenv import load_dotenv
 import os
@@ -8,8 +8,9 @@ import time  # For rate limiting
 # Load environment variables from .env file
 load_dotenv()
 
-app = Flask(__name__)
-CORS(app)
+
+app = Flask(__name__, static_folder="build", static_url_path="/")
+
 
 # Finnhub API Key
 FINNHUB_API_KEY = os.getenv('FINNHUB_API_KEY')
@@ -143,15 +144,14 @@ def get_portfolio():
         print(f"Error fetching portfolio: {e}")
         return jsonify({"error": "Failed to fetch portfolio data"}), 500
 
-@app.route('/', methods=['GET'])
-def home():
-    return jsonify({
-        "message": "Welcome to StockPicker API!",
-        "endpoints": {
-            "recommendations": "/recommendations (POST)",
-            "portfolio": "/portfolio (GET)"
-        }
-    }), 200
+
+@app.route("/")
+@app.route("/<path:path>")
+def serve_react(path=""):
+    if path and os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
+    return send_from_directory(app.static_folder, "index.html")
+
 
 
 if __name__ == '__main__':
