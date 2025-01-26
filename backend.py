@@ -1,14 +1,13 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import requests
 from dotenv import load_dotenv
 import os
 
-
 # Load environment variables from .env file
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static", template_folder="templates")
 CORS(app)
 
 # Finnhub API Key
@@ -18,28 +17,28 @@ FINNHUB_API_KEY = os.getenv('FINNHUB_API_KEY')
 def fetch_stock_data(symbol):
     url = f"https://finnhub.io/api/v1/quote?symbol={symbol}&token={FINNHUB_API_KEY}"
     response = requests.get(url)
-    print(f"Fetching data for {symbol}: {response.status_code} -> {response.json()}")  # Log response
+    print(f"Fetching data for {symbol}: {response.status_code} -> {response.json()}")
     if response.status_code == 200:
         data = response.json()
-        if data and data.get("c") is not None:  # Ensure valid data exists
+        if data and data.get("c") is not None:
             return {
                 "symbol": symbol,
-                "price": data.get("c"),  # Current price
-                "high": data.get("h"),   # High price of the day
-                "low": data.get("l"),    # Low price of the day
-                "change_percent": data.get("dp")  # Percent change
+                "price": data.get("c"),
+                "high": data.get("h"),
+                "low": data.get("l"),
+                "change_percent": data.get("dp")
             }
-    return None  # Return None if data is invalid or request fails
+    return None
 
 # Function to fetch analyst recommendation trends
 def fetch_recommendation_trends(symbol):
     url = f"https://finnhub.io/api/v1/stock/recommendation?symbol={symbol}&token={FINNHUB_API_KEY}"
     response = requests.get(url)
-    print(f"Fetching recommendations for {symbol}: {response.status_code} -> {response.json()}")  # Log response
+    print(f"Fetching recommendations for {symbol}: {response.status_code} -> {response.json()}")
     if response.status_code == 200:
         data = response.json()
         if data:
-            latest_trend = data[0]  # Get the most recent recommendation trend
+            latest_trend = data[0]
             return {
                 "buy": latest_trend.get("buy"),
                 "hold": latest_trend.get("hold"),
@@ -47,20 +46,24 @@ def fetch_recommendation_trends(symbol):
                 "strong_buy": latest_trend.get("strongBuy"),
                 "strong_sell": latest_trend.get("strongSell")
             }
-    return None  # Return None if recommendation data is invalid
+    return None
 
-@app.route('/recommendations', methods=['POST'])
-def get_recommendations():
-    """
-    Generates investment recommendations based on user input.
-    """
-    data = request.json
-    goal = data.get('goal')
-    risk = data.get('risk')
-    amount = data.get('amount')
+@app.route("/")
+def home():
+    return render_template("index.html")
 
-    try:
-        # Example stock symbols based on risk level
+@app.route("/form")
+def form():
+    return render_template("form.html")
+
+@app.route("/recommendations", methods=["POST", "GET"])
+def recommendations():
+    if request.method == "POST":
+        data = request.json
+        goal = data.get('goal')
+        risk = data.get('risk')
+        amount = data.get('amount')
+
         stock_symbols = []
         if risk == 'high':
             stock_symbols = ['AAPL', 'TSLA', 'NVDA']
@@ -69,7 +72,6 @@ def get_recommendations():
         elif risk == 'low':
             stock_symbols = ['MMM', 'MCD', 'WMT']
 
-        # Fetch stock data and recommendation trends for the selected symbols
         stock_details = []
         for symbol in stock_symbols:
             stock_data = fetch_stock_data(symbol)
@@ -83,8 +85,7 @@ def get_recommendations():
                     "price": "Data not available",
                     "recommendation_trends": "Data not available"
                 })
-            
-        # Mock bond recommendations based on risk level
+
         bond_details = []
         if risk == 'high':
             bond_details = [{"symbol": "HYG", "price": 85.23, "change_percent": -0.10}]
@@ -99,51 +100,16 @@ def get_recommendations():
             "note": f'Based on your goal of "{goal}" and risk tolerance of "{risk}", we suggest the following investments for ${amount}.',
         }
 
-        return jsonify(recommendation), 200
-    except Exception as e:
-        print(f"Error: {e}")
-        return jsonify({"error": "Failed to generate recommendations."}), 500
+        return jsonify(recommendation)
+    return render_template("recommendations.html")
 
-# Mock user portfolio data
-USER_PORTFOLIO = [
-    {"symbol": "AAPL", "shares": 10},
-    {"symbol": "MSFT", "shares": 5},
-    {"symbol": "TSLA", "shares": 8}
-]
+@app.route("/portfolio")
+def portfolio():
+    portfolio = [
+        {"symbol": "AAPL", "shares": 10, "price": 150},
+        {"symbol": "TSLA", "shares": 5, "price": 900}
+    ]
+    return render_template("portfolio.html", portfolio=portfolio)
 
-@app.route('/portfolio', methods=['GET'])
-def get_portfolio():
-    """
-    Fetches real-time stock data for the user's portfolio holdings.
-    """
-    try:
-        portfolio_details = []
-        for holding in USER_PORTFOLIO:
-            # Fetch real-time stock data for each holding
-            stock_data = fetch_stock_data(holding['symbol'])
-            if stock_data:
-                portfolio_details.append({
-                    "symbol": holding['symbol'],
-                    "shares": holding['shares'],
-                    "price": stock_data.get("price"),
-                    "change_percent": stock_data.get("change_percent")
-                })
-            else:
-                portfolio_details.append({
-                    "symbol": holding['symbol'],
-                    "shares": holding['shares'],
-                    "price": "Data not available",
-                    "change_percent": "Data not available"
-                })
-           
-
-        return jsonify({"portfolio": portfolio_details}), 200
-    except Exception as e:
-        print(f"Error fetching portfolio: {e}")
-        return jsonify({"error": "Failed to fetch portfolio data"}), 500
-
-
-
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5002)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
