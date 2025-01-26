@@ -7,13 +7,16 @@ const NavBar = () => {
         <nav className="navBar">
             <ul className="navList">
                 <li className="navItem">
-                    <Link to="/" className="navLink">Home</Link> {/* Proper React Router Link */}
+                    <Link to="/" className="navLink">Home</Link>
                 </li>
                 <li className="navItem">
-                    <Link to="/get-started" className="navLink">Get Started</Link> {/* Proper React Router Link */}
+                    <Link to="/analysis" className="navLink">Analysis</Link> {/* Placeholder */}
                 </li>
                 <li className="navItem">
-                    <Link to="/portfolio" className="navLink">Portfolio</Link> {/* Proper React Router Link */}
+                    <Link to="/market-news" className="navLink">Market News</Link> {/* Placeholder */}
+                </li>
+                <li className="navItem">
+                    <Link to="/portfolio" className="navLink">Portfolio</Link>
                 </li>
             </ul>
         </nav>
