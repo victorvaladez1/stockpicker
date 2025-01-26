@@ -1,12 +1,15 @@
 import React from "react";
 import Navbar from "../components/NavBar/Navbar.js"
 import Footer from "../components/Footer/Footer.js"
+import GetStartedHero from "../components/GetStartedHero/GetStartedHero.js";
+import InvestmentCalculator from "../components/InvestmentCalculator/InvestmentCalculator.js";
 
 const GetStarted = () => {
     return (
         <div>
             <Navbar />
-            <p>This is GetStarter page</p>
+            <GetStartedHero />
+            <InvestmentCalculator />
             <Footer />
         </div>
     );

@@ -1,6 +1,6 @@
 /* PortfolioHero.css */
 
-.portfolio-hero-section {
+.getstarted-hero-section {
     display: flex;
     justify-content: center; /* Center horizontally */
     align-items: center;    /* Center vertically */
@@ -9,11 +9,11 @@
     position: relative;
 }
 
-.portfolio-hero-content {
+.getstarted-hero-content {
     text-align: center;
 }
 
-.portfolio-hero-section h1 {
+.getstarted-hero-section h1 {
     font-size: 3rem;           /* Large font size */
     font-weight: bold;         /* Bold text */
     color: black;              /* Black text */

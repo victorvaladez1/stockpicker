@@ -5,7 +5,7 @@ const AnalysisHero = () => {
     return (
         <div className="analysis-hero-section">
             <div className="analysis-hero-content"></div>
-            <h1>Recommendations</h1>
+            <h1>Investment Recommendations</h1>
         </div>
     );
 };
