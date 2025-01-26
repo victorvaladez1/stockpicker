@@ -1,20 +1,18 @@
 import React from "react";
-import Navbar from "../components/NavBar/Navbar";
-import Footer from "../components/Footer/Footer";
-import AnalysisHero from "../components/AnalysisHero/AnalysisHero";
-import StockRecommendations from "../components/StockRecommendations/StockRecommendations.js";
-import RecommendedBonds from "../components/RecommendedBonds/RecommendedBonds.js";
+import { useLocation } from "react-router-dom";
 
 const Analysis = () => {
-    return (
-        <div>
-            <Navbar />
-            <AnalysisHero />
-            <StockRecommendations />
-            <RecommendedBonds />
-            <Footer />
-        </div>
-    );
+  const { state } = useLocation();
+  const { goal, risk, investment } = state || {}; // Ensure fallback if state is missing
+
+  return (
+    <div>
+      <h1>Analysis Page</h1>
+      <p><strong>Goal:</strong> {goal || "No goal specified"}</p>
+      <p><strong>Risk Tolerance:</strong> {risk || "No risk level specified"}</p>
+      <p><strong>Investment Amount:</strong> ${investment || "No amount specified"}</p>
+    </div>
+  );
 };
 
 export default Analysis;
