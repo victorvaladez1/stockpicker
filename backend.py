@@ -56,11 +56,6 @@ def home():
 def form():
     return render_template("form.html")
 
-@app.route('/about')
-def about():
-    return render_template('about.html')
-
-
 @app.route("/recommendations", methods=["POST", "GET"])
 def recommendations():
     if request.method == "POST":
