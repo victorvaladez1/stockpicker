@@ -1,0 +1,68 @@
+.navBar {
+    background-color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+/* Navigation Items */
+.navList {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+}
+
+.navItem {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.navLink {
+    text-decoration: none;
+    color: black;
+    padding: 8px;
+    transition: color 0.3s, background-color 0.3s;
+}
+
+.navLink:hover {
+    color: grey;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+/* Buttons for Sign in and Register */
+.navItemButton {
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+}
+
+.navButtonGrey {
+    background-color: grey;
+    color: black;
+    border: none;
+    transition: background-color 0.3s;
+}
+
+.navButtonGrey:hover {
+    background-color: darkgrey;
+    border: 1px solid black;
+}
+
+.navButtonDarkGrey {
+    background-color: darkgrey;
+    color: black;
+    border: 1px solid black;
+    transition: background-color 0.3s;
+}
+
+.navButtonDarkGrey:hover {
+    background-color: grey;
+}
