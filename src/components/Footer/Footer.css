@@ -2,12 +2,12 @@
     background-color: white;
     padding: 20px;
     text-align: left;
+    font-family: Arial, sans-serif;
 }
 
 .footer-section {
-    max-width: 300px;
+    max-width: 600px; /* Wider section for team info */
     margin: 0 auto;
-    font-family: Arial, sans-serif;
 }
 
 .footer-section h4 {
@@ -16,19 +16,25 @@
     color: #333;
 }
 
-.footer-list {
+.team-list {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.footer-list li {
+.team-member {
     font-size: 14px;
-    margin-bottom: 5px;
+    margin-bottom: 15px;
     color: #555;
+    display: flex; /* Align text and iframe horizontally */
+    flex-direction: column; /* Stack text and iframe for smaller screens */
+    gap: 5px;
 }
 
-.footer-list li:hover {
-    color: #000;
-    cursor: pointer;
+.linkedin-iframe {
+    border: none;
+    width: 300px; /* Adjust width of iframe */
+    height: 50px; /* Adjust height of iframe */
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
