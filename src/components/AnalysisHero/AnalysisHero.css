@@ -1,0 +1,23 @@
+/* PortfolioHero.css */
+
+.analysis-hero-section {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center;    /* Center vertically */
+    height: 70vh;          /* Full viewport height */
+    background-color: #f9f9f9; /* Light gray background */
+    position: relative;
+}
+
+.analysis-hero-content {
+    text-align: center;
+}
+
+.analysis-hero-section h1 {
+    font-size: 3rem;           /* Large font size */
+    font-weight: bold;         /* Bold text */
+    color: black;              /* Black text */
+    padding: 20px;             /* Space around the text */
+    display: inline-block;     /* Keep the text's width to its content */
+    border-radius: 5px;        /* Rounded corners */
+}

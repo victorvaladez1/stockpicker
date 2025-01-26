@@ -13,7 +13,7 @@ const HeroSection = () => {
     <section className="hero-section">
       <div className="hero-content">
         <h1>Stock Picker</h1>
-        <p>Powered by Alpha Vantage</p>
+        <p>Powered by Finnhub</p>
         <button className="get-started-btn" onClick={handleGetStarted}>
           Get Started
         </button>

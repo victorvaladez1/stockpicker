@@ -1,13 +1,14 @@
 import React from "react";
 import Navbar from "../components/NavBar/Navbar";
 import Footer from "../components/Footer/Footer";
+import AnalysisHero from "../components/AnalysisHero/AnalysisHero.js"
 
 const Analysis = () => {
 
     return (
         <div>
             <Navbar />
-            <p>Analysis Page</p>
+            <AnalysisHero />
             <Footer />
         </div>
     );
