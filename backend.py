@@ -3,7 +3,7 @@ from flask_cors import CORS
 import requests
 from dotenv import load_dotenv
 import os
-import time  # For rate limiting
+
 
 # Load environment variables from .env file
 load_dotenv()
@@ -83,8 +83,7 @@ def get_recommendations():
                     "price": "Data not available",
                     "recommendation_trends": "Data not available"
                 })
-            time.sleep(1)  # Prevent exceeding API rate limits
-
+            
         # Mock bond recommendations based on risk level
         bond_details = []
         if risk == 'high':
@@ -136,7 +135,7 @@ def get_portfolio():
                     "price": "Data not available",
                     "change_percent": "Data not available"
                 })
-            time.sleep(1)  # Prevent exceeding API rate limits
+           
 
         return jsonify({"portfolio": portfolio_details}), 200
     except Exception as e:
