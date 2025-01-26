@@ -144,17 +144,7 @@ def get_portfolio():
         return jsonify({"error": "Failed to fetch portfolio data"}), 500
 
 
-# Example API Endpoint for Portfolio
-@app.route('/portfolio', methods=['GET'])
-def get_portfolio():
-    # Mock response
-    portfolio = {
-        "portfolio": [
-            {"symbol": "AAPL", "shares": 10, "price": 150},
-            {"symbol": "TSLA", "shares": 5, "price": 900}
-        ]
-    }
-    return jsonify(portfolio)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002)
