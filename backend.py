@@ -11,7 +11,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Alpha Vantage API Key
-ALPHA_VANTAGE_API_KEY = 'JAUO7HLM0PAE1GU0'
+ALPHA_VANTAGE_API_KEY = os.getenv('ALPHA_VANTAGE_API_KEY')
 
 @app.route('/recommendations', methods=['POST'])
 def get_recommendations():
