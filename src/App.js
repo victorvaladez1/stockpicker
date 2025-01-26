@@ -1,70 +1,29 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import Home from "./pages/Home";
+import Recommendations from "./pages/Recommendations";
+import Portfolio from "./pages/Portfolio";
+import AboutUs from "./pages/AboutUs";
 
 function App() {
-  const [recommendations, setRecommendations] = useState(null); // State for recommendations
-  const [portfolio, setPortfolio] = useState(null);             // State for portfolio
-  const [loading, setLoading] = useState(true);                 // Loading state
-
-  useEffect(() => {
-    // Fetch recommendations
-    axios
-      .post("https://stockpicker-2nv6.onrender.com/recommendations", {
-        goal: "retirement", // Example goal
-        risk: "medium",     // Example risk level
-        amount: 10000       // Example investment amount
-      })
-      .then((response) => {
-        setRecommendations(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching recommendations:", error);
-      });
-
-    // Fetch portfolio
-    axios
-      .get("https://stockpicker-2nv6.onrender.com/portfolio")
-      .then((response) => {
-        setPortfolio(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching portfolio:", error);
-      })
-      .finally(() => {
-        setLoading(false); // Set loading to false after all calls
-      });
-  }, []); // Empty dependency array ensures it runs once on component mount
-
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold text-blue-500">Investment Dashboard</h1>
+    <Router>
+      <nav className="p-4 bg-white shadow-md">
+        <ul className="flex space-x-4">
+          <li><Link to="/">Home</Link></li>
+          <li><Link to="/recommendations">Analysis</Link></li>
+          <li><Link to="/portfolio">Portfolio</Link></li>
+          <li><Link to="/about-us">About Us</Link></li>
+        </ul>
+      </nav>
 
-      <div className="mt-4">
-        <h2 className="text-xl font-semibold">Recommendations:</h2>
-        {loading ? (
-          <p>Loading recommendations...</p>
-        ) : recommendations ? (
-          <pre className="bg-gray-100 p-4 rounded-md">
-            {JSON.stringify(recommendations, null, 2)}
-          </pre>
-        ) : (
-          <p>No recommendations available.</p>
-        )}
-      </div>
-
-      <div className="mt-4">
-        <h2 className="text-xl font-semibold">Portfolio:</h2>
-        {loading ? (
-          <p>Loading portfolio...</p>
-        ) : portfolio ? (
-          <pre className="bg-gray-100 p-4 rounded-md">
-            {JSON.stringify(portfolio, null, 2)}
-          </pre>
-        ) : (
-          <p>No portfolio data available.</p>
-        )}
-      </div>
-    </div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/recommendations" element={<Recommendations />} />
+        <Route path="/portfolio" element={<Portfolio />} />
+        <Route path="/about-us" element={<AboutUs />} />
+      </Routes>
+    </Router>
   );
 }
 
