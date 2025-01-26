@@ -143,5 +143,16 @@ def get_portfolio():
         print(f"Error fetching portfolio: {e}")
         return jsonify({"error": "Failed to fetch portfolio data"}), 500
 
+@app.route('/', methods=['GET'])
+def home():
+    return jsonify({
+        "message": "Welcome to StockPicker API!",
+        "endpoints": {
+            "recommendations": "/recommendations (POST)",
+            "portfolio": "/portfolio (GET)"
+        }
+    }), 200
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002)
