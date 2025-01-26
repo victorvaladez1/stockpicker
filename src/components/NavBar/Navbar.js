@@ -10,7 +10,7 @@ const NavBar = () => {
                     <Link to="/" className="navLink">Home</Link>
                 </li>
                 <li className="navItem">
-                    <Link to="/analysis" className="navLink">Analysis</Link> {/* Placeholder */}
+                    <Link to="/analysis" className="navLink">Analysis</Link> {}
                 </li>
                 <li className="navItem">
                     <Link to="/market-news" className="navLink">Market News</Link> {/* Placeholder */}
