@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StockPicker - Portfolio</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Your Portfolio</h1>
+  </header>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="form.html">Get Started</a></li>
+      <li><a href="portfolio.html" class="active">Portfolio</a></li>
+      <li><a href="about.html">About Us</a></li>
+    </ul>
+  </nav>
+  <main>
+    <h2>Portfolio Overview</h2>
+    <div id="portfolio-output" class="card-container">
+      <p>Loading your portfolio...</p>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; 2025 StockPicker</p>
+  </footer>
+  <script>
+    const backendURL = "https://your-backend-url.onrender.com"; // Replace with your backend URL
+
+    // Fetch portfolio data
+    const portfolioOutput = document.getElementById("portfolio-output");
+    if (portfolioOutput) {
+      (async () => {
+        try {
+          const response = await fetch(`${backendURL}/portfolio`);
+          const data = await response.json();
+
+          // Render portfolio data dynamically as cards
+          portfolioOutput.innerHTML = data.portfolio
+            .map(
+              (item) => `
+              <div class="card">
+                <h3>${item.symbol}</h3>
+                <p><strong>Shares:</strong> ${item.shares}</p>
+                <p><strong>Price:</strong> $${item.price}</p>
+                <p><strong>Change:</strong> ${item.change_percent}%</p>
+              </div>
+            `
+            )
+            .join("");
+        } catch (error) {
+          portfolioOutput.innerHTML = `
+            <div class="card">
+              <p>Error loading portfolio data. Please try again later.</p>
+            </div>`;
+          console.error("Error fetching portfolio data:", error);
+        }
+      })();
+    }
+  </script>
+</body>
+</html>

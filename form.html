@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StockPicker - Form</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Enter Your Investment Details</h1>
+  </header>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="form.html" class="active">Get Started</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="about.html">About Us</a></li>
+    </ul>
+  </nav>
+  <main>
+    <form id="investment-form">
+      <label for="goal">Goal:</label>
+      <input type="text" id="goal" name="goal" placeholder="e.g., retirement, education" required>
+      
+      <label for="risk">Risk Tolerance:</label>
+      <select id="risk" name="risk">
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
+      
+      <label for="amount">Investment Amount:</label>
+      <input type="number" id="amount" name="amount" placeholder="Enter amount" required>
+      
+      <button type="submit">
+        <a href="recommendations.html">
+            Submit
+        </a> 
+    </button>
+    </form>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
